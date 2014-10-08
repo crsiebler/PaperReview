@@ -1,0 +1,52 @@
+% Name: Cory Siebler
+% ASU ID: 1000832292
+% Class: CSE471 MW 4:30-5:45
+% Description: Reviewed papers puzzle
+
+author(david).
+author(john).
+author(michael).
+author(emily).
+
+wrote(david, paper1).
+wrote(david, paper2).
+wrote(john, paper2).
+wrote(michael, paper3).
+wrote(emily, paper4).
+
+reviewer(greg).
+reviewer(justin).
+reviewer(jarred).
+
+paper(paper1;paper2;paper3;paper4).
+
+result(positive; negative).
+
+review(greg, paper1, positive).
+review(jarred, paper1, positive).
+review(jarred, paper1, negative).
+
+review(justin, paper2, positive).
+review(greg, paper2, negative).
+review(jarred, paper2, negative).
+
+review(jarred, paper3, positive).
+review(jarred, paper3, positive).
+
+% A paper needs more reviewer(s) if and only if it has not been reviewed by at least three different reviewers
+three_or_more_reviews(P) :- paper(P), reviewer(R1), reviewer(R2), reviewer(R3), review(R1,P,_), review(R2,P,_), review(R3,P,_), R1!=R2, R1!=R3, R2!=R3.
+need_reviewer(P) :- paper(P), not three_or_more_reviews(P).
+
+% A paper is rejected if and only if it has not been positively reviewed by two different reviewers
+two_or_more_positive_reviews(P) :- reviewer(R1), reviewer(R2), paper(P), review(R1,P,positive), review(R2,P,positive), R1!=R2.
+rejected(P) :- paper(P), not two_or_more_positive_reviews(P). 
+reject(A,P) :- author(A), paper(P), wrote(A,P), rejected(P).
+
+% Hide/Show results
+#show need_reviewer/1.
+#show reject/2. 
+
+%--------%
+% OUTPUT %
+%--------%
+% need_reviewer(paper1) need_reviewer(paper3) need_reviewer(paper4) reject(david,paper2) reject(john,paper2) reject(michael,paper3) reject(emily,paper4)
